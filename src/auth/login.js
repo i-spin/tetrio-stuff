@@ -1,37 +1,35 @@
-const request = require("request");
+const fetch = require("node-fetch");
 const readline = require("readline-sync");
 
 const username = readline.question("Username: ");
 const password = readline.question(`Password for user ${username}: `);
 
-request.get(
-  `https://tetr.io/api/users/${username}/exists`,
-  (err, res, _) => {
-    if (err) console.error(err);
-    if (res.toJSON().body.success) {
-      console.log("User not found, stopping.");
+fetch(`https://tetr.io/api/users/${username}/exists`)
+  .then((res) => res.json())
+  .then((data) => {
+    if (!data.success) {
+      console.error("Username does not exist.");
       process.exit(1);
     }
-  },
-);
+  });
 
-request.post(
-  `https://tetr.io/api/users/authenticate`,
-  {
-    json: {
-      "username": username,
-      "password": password,
-    },
+fetch(`https://tetr.io/api/users/authenticate`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
   },
-  (err, res, _) => {
-    if (err) console.error(err);
-    console.log(
-      `Authentication status: ${
-        res.toJSON().body.success ? "success" : "failure"
-      }`,
-    );
-    console.log(`UserID: ${res.toJSON().body.userid}`);
-    console.log(`Token: ${res.toJSON().body.token}`);
+  body: JSON.stringify({
+    "username": username,
+    "password": password,
+  }),
+})
+  .then((res) => res.json())
+  .then((data) => {
+    if (!data.success) {
+      console.error("Incorrect password.");
+      process.exit(1);
+    }
+    console.log(`UserID: ${data.userid}`);
+    console.log(`Token: ${data.token}`);
     console.log("DO NOT SHARE THIS INFORMATION TO ANYONE!");
-  },
-);
+  });
