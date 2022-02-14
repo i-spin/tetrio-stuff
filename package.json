@@ -1,0 +1,15 @@
+{
+  "name": "tetrio-webhook",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "cors-anywhere": "^0.4.4",
+    "discord-webhook-node": "^1.1.8",
+    "graceful-fs": "^4.2.9",
+    "lokijs": "^1.5.12",
+    "path": "^0.12.7",
+    "readline-sync": "^1.4.10",
+    "request": "^2.88.2"
+  }
+}
