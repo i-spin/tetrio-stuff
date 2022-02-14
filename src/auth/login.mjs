@@ -2,7 +2,9 @@ import fetch from "node-fetch";
 import { question } from "readline-sync";
 
 const username = question("Username: ");
-const password = question(`Password for user ${username}: `);
+const password = question(`Password for user ${username}: `, {
+  hideEchoBack: true,
+});
 
 fetch(`https://tetr.io/api/users/${username}/exists`)
   .then((res) => res.json())
