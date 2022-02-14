@@ -1,5 +1,5 @@
-const fetch = require("node-fetch");
-const { Webhook, MessageBuilder } = require("discord-webhook-node");
+import fetch from "node-fetch";
+import { MessageBuilder, Webhook } from "discord-webhook-node";
 
 const webhook = new Webhook(process.env.WEBHOOK_URL);
 

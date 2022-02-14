@@ -1,8 +1,8 @@
-const fetch = require("node-fetch");
-const readline = require("readline-sync");
+import fetch from "node-fetch";
+import { question } from "readline-sync";
 
-const username = readline.question("Username: ");
-const password = readline.question(`Password for user ${username}: `);
+const username = question("Username: ");
+const password = question(`Password for user ${username}: `);
 
 fetch(`https://tetr.io/api/users/${username}/exists`)
   .then((res) => res.json())

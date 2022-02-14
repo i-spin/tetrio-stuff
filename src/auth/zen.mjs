@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+import fetch from "node-fetch";
 
 fetch("https://tetr.io/api/games/zen", {
   method: "POST",
