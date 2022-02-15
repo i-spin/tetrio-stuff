@@ -40,9 +40,19 @@ ws.on("open", () => {
 });
 
 
-// 69 = 0x45
-// 174 = 0xae
 ws.onmessage = (event) => {
-  const packetType = event.data.slice(0, 1)[0];
-  console.log(packetType);
+  switch (event.data.slice(0, 1)[0]) {
+    case 0x45:
+      // not working, still mojibake
+      // everything after the first byte can be unpacked and processed
+      console.log(`${event.data.slice(1)}, ID: ${event.data.id}`);
+      break;
+    case 0xae:
+      // working
+      // 1 byte of df marker, 4 bytes of extracted id
+      console.log(tinyMsgpack.decode(event.data.slice(5)));
+      break;
+    default:
+        break;
+  }
 }
