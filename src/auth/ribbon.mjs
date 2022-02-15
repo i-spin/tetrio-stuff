@@ -49,7 +49,7 @@ ws.onmessage = (event) => {
       break;
     case 0xae:
       // working
-      // 1 byte of df marker, 4 bytes of extracted id
+      // 1 byte of df marker, 4 bytes(32 bits) of extracted id
       console.log(tinyMsgpack.decode(event.data.slice(5)));
       break;
     default:
