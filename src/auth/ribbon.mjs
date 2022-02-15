@@ -16,7 +16,6 @@ const ribbon = await fetch("https://tetr.io/api/server/ribbon", {
 }).then((res) => res.json());
 
 const ws = new WebSocket(ribbon.endpoint);
-let id = 0;
 const newClient = tinyMsgpack.encode(commands.new_ribbon());
 const handling = commands.handling(0, 7.5, 40, true, false, 0);
 const authorizeClient = tinyMsgpack.encode(
@@ -32,12 +31,18 @@ const die = tinyMsgpack.encode(commands.die());
 
 ws.on("open", () => {
   console.log("Connected to server.");
+  ws.send(newClient);
+  console.log("Sent new client.");
+  ws.send(authorizeClient);
+  console.log("Sent authorize client.");
   ws.send(die);
+  console.log("Sent die.");
 });
 
-ws.on("message", (data) => {
-  console.log("Received message.");
-  console.log(data);
-  console.log(tinyMsgpack.decode(data));
-})
 
+// 69 = 0x45
+// 174 = 0xae
+ws.onmessage = (event) => {
+  const packetType = event.data.slice(0, 1)[0];
+  console.log(packetType);
+}
