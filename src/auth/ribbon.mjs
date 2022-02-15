@@ -1,7 +1,9 @@
 import fetch from "node-fetch";
 import WebSocket from "ws";
 import tinyMsgpack from "tiny-msgpack";
-import * as commands from "./utils/commands.mjs";
+import * as commands from "./utils/commands.mjs"
+
+WebSocket.prototype.ribbon = {id: 0};
 
 const enviroment = await fetch("https://tetr.io/api/server/environment").then(
   (res) => res.json()
@@ -19,7 +21,7 @@ const newClient = tinyMsgpack.encode(commands.new_ribbon());
 const handling = commands.handling(0, 7.5, 40, true, false, 0);
 const authorizeClient = tinyMsgpack.encode(
   commands.authorize(
-    id++,
+    ws.ribbon.id++,
     process.env.TOKEN,
     handling,
     enviroment,
@@ -28,16 +30,14 @@ const authorizeClient = tinyMsgpack.encode(
 );
 const die = tinyMsgpack.encode(commands.die());
 
-setTimeout(() => {
-  if (ws.readyState === 1) {
-    ws.onmessage = (event) => {
-      console.log(`Original Message: ${event.data}`);
-      console.log(`Decoded Message: ${tinyMsgpack.decode(event.data)}`);
-    };
+ws.on("open", () => {
+  console.log("Connected to server.");
+  ws.send(die);
+});
 
-    ws.send(newClient);
-    ws.send(authorizeClient);
-    ws.send(die);
-    process.exit(0);
-  }
-}, 5);
+ws.on("message", (data) => {
+  console.log("Received message.");
+  console.log(data);
+  console.log(tinyMsgpack.decode(data));
+})
+
