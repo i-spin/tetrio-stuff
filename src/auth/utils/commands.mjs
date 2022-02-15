@@ -1,27 +1,28 @@
-const new_ribbon = () => {
-  return {"command": "new"}
-}
+const newRibbon = () => ({ command: 'new' });
 
-const handling = (arr, das, sdf, safelock, cancel, dcd) => {
-  return {"arr": arr, "das": das, "sdf": sdf, "safelock": safelock, "cancel": cancel, "dcd": dcd}
-}
+const handling = (arr, das, sdf, safelock, cancel, dcd) => ({
+  arr, das, sdf, safelock, cancel, dcd,
+});
 
-const authorize = (id, token, handling, signature, i) => {
-  return {"id": id, "command": "authorize", data: {"token": token, "handling": handling, "signature": signature, "i": i.toString('base64')}}
-}
+// eslint-disable-next-line no-shadow
+const authorize = (id, token, handling, signature, i) => ({
+  id,
+  command: 'authorize',
+  data: {
+    token, handling, signature, i: i.toString('base64'),
+  },
+});
 
-const die = () => {
-  return {"command": "die"}
-}
+const die = () => ({ command: 'die' });
 
 const ping = () => {
-  "PING"
-}
+  'PING';
+};
 
 export {
-  new_ribbon,
+  newRibbon,
   handling,
   authorize,
   die,
-  ping
-}
+  ping,
+};

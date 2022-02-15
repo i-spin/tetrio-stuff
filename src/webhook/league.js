@@ -8,6 +8,10 @@ webhook.setUsername('Tetra League News');
 webhook.setAvatar('https://branding.osk.sh/tetrio-color.png');
 const userID = 'league_userrecent_60973cca34013fd46d14312f';
 
+function roundToTwo(num) {
+  return Math.round((num + Number.EPSILON) * 100) / 100;
+}
+
 request(`https://ch.tetr.io/api/streams/${userID}`, (err, res, body) => {
   if (err) console.error(err);
   console.log(res && res.statusCode);
@@ -20,57 +24,57 @@ request(`https://ch.tetr.io/api/streams/${userID}`, (err, res, body) => {
   fs.readFile(path.join(__dirname, '../league.json'), (err, data) => {
     if (err) console.error(err);
 
-    let old_game;
+    let oldGame;
     try {
-      old_game = JSON.stringify(JSON.parse(data).data.records);
+      oldGame = JSON.stringify(JSON.parse(data).data.records);
     } catch {
-      old_game = JSON.stringify([]);
+      oldGame = JSON.stringify([]);
     }
-    const new_game = JSON.stringify(JSON.parse(body).data.records);
-    const parsed_new_game = JSON.parse(new_game);
+    const newGame = JSON.stringify(JSON.parse(body).data.records);
+    const parsedNewGame = JSON.parse(newGame);
 
-    if (old_game === new_game) return;
+    if (oldGame === newGame) return;
 
-    const condition = parsed_new_game[0].endcontext[0].wins
-      > parsed_new_game[0].endcontext[1].wins;
+    const condition = parsedNewGame[0].endcontext[0].wins
+      > parsedNewGame[0].endcontext[1].wins;
 
     const embed = new MessageBuilder()
       .setTitle(
-        `${parsed_new_game[0].endcontext[0].user.username} has ${
+        `${parsedNewGame[0].endcontext[0].user.username} has ${
           condition ? 'won' : 'lost'
         } a tetra league game against ${
-          parsed_new_game[0].endcontext[1].user.username
+          parsedNewGame[0].endcontext[1].user.username
         }!`,
       )
       .setDescription(
-        `${parsed_new_game[0].endcontext[0].wins} - ${
-          parsed_new_game[0].endcontext[1].wins
+        `${parsedNewGame[0].endcontext[0].wins} - ${
+          parsedNewGame[0].endcontext[1].wins
         }`,
       )
       .addField(
-        `Stats for ${parsed_new_game[0].endcontext[0].user.username}`,
+        `Stats for ${parsedNewGame[0].endcontext[0].user.username}`,
         `APM: ${
-          roundToTwo(parsed_new_game[0].endcontext[0].points.secondary)
+          roundToTwo(parsedNewGame[0].endcontext[0].points.secondary)
         }\nPPS: ${
-          roundToTwo(parsed_new_game[0].endcontext[0].points.tertiary)
-        }\nVS: ${roundToTwo(parsed_new_game[0].endcontext[0].points.extra.vs)}`,
+          roundToTwo(parsedNewGame[0].endcontext[0].points.tertiary)
+        }\nVS: ${roundToTwo(parsedNewGame[0].endcontext[0].points.extra.vs)}`,
         true,
       )
       .addField(
-        `Stats for ${parsed_new_game[0].endcontext[1].user.username}`,
+        `Stats for ${parsedNewGame[0].endcontext[1].user.username}`,
         `APM: ${
-          roundToTwo(parsed_new_game[0].endcontext[1].points.secondary)
+          roundToTwo(parsedNewGame[0].endcontext[1].points.secondary)
         }\nPPS: ${
-          roundToTwo(parsed_new_game[0].endcontext[1].points.tertiary)
-        }\nVS: ${roundToTwo(parsed_new_game[0].endcontext[1].points.extra.vs)}`,
+          roundToTwo(parsedNewGame[0].endcontext[1].points.tertiary)
+        }\nVS: ${roundToTwo(parsedNewGame[0].endcontext[1].points.extra.vs)}`,
         true,
       )
       .addField(
         'Replay',
-        `https://tetr.io/#r:${parsed_new_game[0].replayid}`,
+        `https://tetr.io/#r:${parsedNewGame[0].replayid}`,
       )
       .setColor(condition ? 16756521 : 6445785)
-      .setFooter(parsed_new_game[0].ts);
+      .setFooter(parsedNewGame[0].ts);
     webhook.send(embed);
 
     fs.writeFile(path.join(__dirname, '../league.json'), body, (err) => {
@@ -78,7 +82,3 @@ request(`https://ch.tetr.io/api/streams/${userID}`, (err, res, body) => {
     });
   });
 });
-
-function roundToTwo(num) {
-  return Math.round((num + Number.EPSILON) * 100) / 100;
-}

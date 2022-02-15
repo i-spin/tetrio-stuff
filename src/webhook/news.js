@@ -90,6 +90,9 @@ request(`https://ch.tetr.io/api/news/${userID}`, (err, res, body) => {
           .setColor(15603580);
         webhook.send(badge);
         break;
+        
+      default:
+        break;
     }
 
     fs.writeFile(path.join(__dirname, '../cache.json'), body, (err) => {
@@ -132,5 +135,7 @@ function getIcon(rank) {
       return 'https://tetr.io/res/league-ranks/d+.png';
     case 'D':
       return 'https://tetr.io/res/league-ranks/d.png';
+    default:
+      return null;
   }
 }

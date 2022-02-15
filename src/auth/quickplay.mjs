@@ -1,9 +1,9 @@
-import fetch from "node-fetch";
-import { MessageBuilder, Webhook } from "discord-webhook-node";
+import fetch from 'node-fetch';
+import { MessageBuilder, Webhook } from 'discord-webhook-node';
 
 const webhook = new Webhook(process.env.WEBHOOK_URL);
 
-fetch("https://tetr.io/api/rooms/menu", {
+fetch('https://tetr.io/api/rooms/menu', {
   headers: {
     Authorization: `Bearer ${process.env.TOKEN}`,
   },
@@ -12,7 +12,7 @@ fetch("https://tetr.io/api/rooms/menu", {
   .then((data) => {
     if (data.quickplay.total >= 100) {
       const embed = new MessageBuilder()
-        .setTitle("Super Lobby has engaged in quickplay!")
+        .setTitle('Super Lobby has engaged in quickplay!')
         .setDescription(`${data.quickplay.total} players are in the lobby.`);
       webhook.send(embed);
     }
