@@ -401,6 +401,11 @@ sshpk@^1.7.0:
     safer-buffer "^2.0.2"
     tweetnacl "~0.14.0"
 
+tiny-msgpack@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/tiny-msgpack/-/tiny-msgpack-1.0.2.tgz#78cb189e9d27b30de168284555548e298858edb3"
+  integrity sha1-eMsYnp0nsw3haChFVVSOKYhY7bM=
+
 tough-cookie@~2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-2.5.0.tgz#cd9fb2a0aa1d5a12b473bd9fb96fa3dcff65ade2"
