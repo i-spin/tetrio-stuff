@@ -14,5 +14,14 @@
     "request": "^2.88.2",
     "tiny-msgpack": "^1.0.2",
     "ws": "^8.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.9.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4"
+  },
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint src/**/*.js",
+    "format": "./node_modules/.bin/eslint --fix src/**/*.js"
   }
 }

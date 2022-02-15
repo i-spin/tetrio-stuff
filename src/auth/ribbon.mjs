@@ -41,18 +41,25 @@ ws.on("open", () => {
 
 
 ws.onmessage = (event) => {
-  switch (event.data.slice(0, 1)[0]) {
-    case 0x45:
-      // not working, still mojibake
-      // everything after the first byte can be unpacked and processed
-      console.log(`${event.data.slice(1)}, ID: ${event.data.id}`);
-      break;
-    case 0xae:
-      // working
-      // 1 byte of df marker, 4 bytes(32 bits) of extracted id
-      console.log(tinyMsgpack.decode(event.data.slice(5)));
-      break;
-    default:
+  try {
+    switch (event.data.slice(0, 1)[0]) {
+      case 0x45:
+        // Standard id tag
+        // everything after the first byte can be unpacked and processed
+        // console.log(tinyMsgpack.decode(event.data.slice(0, 1)))
+        console.log(tinyMsgpack.decode(event.data.slice(1)));
         break;
+      case 0xae:
+        // Extracted id tag
+        // 1 byte of marker, 4 bytes(32 bits) of extracted id
+        // console.log(tinyMsgpack.decode(event.data.slice(0, 1)));
+        // console.log(tinyMsgpack.decode(event.data.slice(1, 5)));
+        console.log(tinyMsgpack.decode(event.data.slice(5)));
+        break;
+      default:
+          break;
+    }
+  } catch (e) {
+    console.error(e);
   }
 }
