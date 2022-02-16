@@ -23,7 +23,7 @@ const authorizeClient = tinyMsgpack.encode(
     ws.ribbon.id++,
     process.env.TOKEN,
     handling,
-    enviroment,
+    enviroment.signature,
     '5135f9146ea09f75e7128d266a8c822cef06e013',
   ),
 );
