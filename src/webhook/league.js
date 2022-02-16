@@ -21,9 +21,7 @@ request(`https://ch.tetr.io/api/streams/${userID}`, (err, res, body) => {
     return 'cache created';
   }
 
-  fs.readFile(path.join(__dirname, '../league.json'), (err, data) => {
-    if (err) console.error(err);
-
+  fs.readFile(path.join(__dirname, '../league.json'), (_, data) => {
     let oldGame;
     try {
       oldGame = JSON.stringify(JSON.parse(data).data.records);
@@ -77,8 +75,7 @@ request(`https://ch.tetr.io/api/streams/${userID}`, (err, res, body) => {
       .setFooter(parsedNewGame[0].ts);
     webhook.send(embed);
 
-    fs.writeFile(path.join(__dirname, '../league.json'), body, (err) => {
-      if (err) console.error(err);
-    });
+    fs.writeFile(path.join(__dirname, '../league.json'), body, () => {});
   });
+  return true;
 });

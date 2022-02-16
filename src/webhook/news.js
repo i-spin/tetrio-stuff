@@ -8,99 +8,6 @@ webhook.setUsername('Tetr.io News');
 webhook.setAvatar('https://branding.osk.sh/tetrio-color.png');
 const userID = 'user_60973cca34013fd46d14312f';
 
-request(`https://ch.tetr.io/api/news/${userID}`, (err, res, body) => {
-  if (err) console.error(err);
-  console.log(res && res.statusCode);
-
-  if (!fs.existsSync(path.join(__dirname, '../cache.json'))) {
-    fs.writeFileSync(path.join(__dirname, '../cache.json'), body);
-    return 'cache created';
-  }
-
-  fs.readFile(path.join(__dirname, '../cache.json'), (err, data) => {
-    if (err) console.error(err);
-
-    let old_news;
-    try {
-      old_news = JSON.stringify(JSON.parse(data).data.news);
-    } catch {
-      old_news = JSON.stringify([]);
-    }
-    const new_news = JSON.stringify(JSON.parse(body).data.news);
-    const parsedNews = JSON.parse(new_news);
-
-    if (old_news === new_news) return;
-
-    switch (parsedNews[0].type) {
-      case 'personalbest':
-        const personalbest = new MessageBuilder()
-          .setTitle(
-            `New Personal Best Record for ${parsedNews[0].data.username} on ${
-              parsedNews[0].data.gametype
-            }!`.trim(),
-          )
-          .setDescription(
-            parsedNews[0].data.gametype == '40l'
-              ? `Record Time: ${
-                Math.round(
-                  ((parsedNews[0].data.result / 1000) + Number.EPSILON) * 100,
-                ) / 100
-              }s.`
-              : `Record Score: ${parsedNews[0].data.result}`,
-          )
-          .addField(
-            'Replay Link:',
-            `https://tetr.io/#R:${parsedNews[0].data.replayid}`,
-          )
-          .setFooter(parsedNews[0].ts)
-          .setColor(15603580);
-        webhook.send(personalbest);
-        break;
-
-      case 'rankup':
-        const rankup = new MessageBuilder()
-          .setTitle(
-            `${parsedNews[0].data.username} has ranked up to ${
-              parsedNews[0].data.rank
-            }!`.trim(),
-          )
-          .setThumbnail(getIcon(parsedNews[0].data.rank))
-          .setFooter(parsedNews[0].ts)
-          .setColor(15603580);
-        webhook.send(rankup);
-        break;
-
-      case 'supporter' || 'supporter_gift':
-        const supporter = new MessageBuilder()
-          .setTitle(
-            `${parsedNews[0].data.username} has become a supporter!`,
-          )
-          .setThumbnail('https://tetr.io/res/supporter-tag.png')
-          .setFooter(parsedNews[0].ts)
-          .setColor(15603580);
-        webhook.send(supporter);
-        break;
-
-      case 'badge':
-        const badge = new MessageBuilder()
-          .setTitle(`${parsedNews[0].data.username} has earned a new badge!`)
-          .addField('Badge Title:', parsedNews[0].data.type)
-          .addField('Badge Description:', parsedNews[0].data.label)
-          .setFooter(parsedNews[0].ts)
-          .setColor(15603580);
-        webhook.send(badge);
-        break;
-        
-      default:
-        break;
-    }
-
-    fs.writeFile(path.join(__dirname, '../cache.json'), body, (err) => {
-      if (err) console.error(err);
-    });
-  });
-});
-
 function getIcon(rank) {
   switch (rank) {
     case 'X':
@@ -139,3 +46,97 @@ function getIcon(rank) {
       return null;
   }
 }
+
+request(`https://ch.tetr.io/api/news/${userID}`, (err, res, body) => {
+  if (err) console.error(err);
+  console.log(res && res.statusCode);
+
+  if (!fs.existsSync(path.join(__dirname, '../cache.json'))) {
+    fs.writeFileSync(path.join(__dirname, '../cache.json'), body);
+    return 'cache created';
+  }
+
+  fs.readFile(path.join(__dirname, '../cache.json'), (_, data) => {
+    let oldNews;
+    try {
+      oldNews = JSON.stringify(JSON.parse(data).data.news);
+    } catch {
+      oldNews = JSON.stringify([]);
+    }
+    const newNews = JSON.stringify(JSON.parse(body).data.news);
+    const parsedNews = JSON.parse(newNews);
+
+    if (oldNews === newNews) return;
+
+    switch (parsedNews[0].type) {
+      case 'personalbest': {
+        const personalbest = new MessageBuilder()
+          .setTitle(
+            `New Personal Best Record for ${parsedNews[0].data.username} on ${
+              parsedNews[0].data.gametype
+            }!`.trim(),
+          )
+          .setDescription(
+            parsedNews[0].data.gametype === '40l'
+              ? `Record Time: ${
+                Math.round(
+                  ((parsedNews[0].data.result / 1000) + Number.EPSILON) * 100,
+                ) / 100
+              }s.`
+              : `Record Score: ${parsedNews[0].data.result}`,
+          )
+          .addField(
+            'Replay Link:',
+            `https://tetr.io/#R:${parsedNews[0].data.replayid}`,
+          )
+          .setFooter(parsedNews[0].ts)
+          .setColor(15603580);
+        webhook.send(personalbest);
+        break;
+      }
+
+      case 'rankup': {
+        const rankup = new MessageBuilder()
+          .setTitle(
+            `${parsedNews[0].data.username} has ranked up to ${
+              parsedNews[0].data.rank
+            }!`.trim(),
+          )
+          .setThumbnail(getIcon(parsedNews[0].data.rank))
+          .setFooter(parsedNews[0].ts)
+          .setColor(15603580);
+        webhook.send(rankup);
+        break;
+      }
+
+      case 'supporter' || 'supporter_gift': {
+        const supporter = new MessageBuilder()
+          .setTitle(
+            `${parsedNews[0].data.username} has become a supporter!`,
+          )
+          .setThumbnail('https://tetr.io/res/supporter-tag.png')
+          .setFooter(parsedNews[0].ts)
+          .setColor(15603580);
+        webhook.send(supporter);
+        break;
+      }
+
+      case 'badge': {
+        const badge = new MessageBuilder()
+          .setTitle(`${parsedNews[0].data.username} has earned a new badge!`)
+          .addField('Badge Title:', parsedNews[0].data.type)
+          .addField('Badge Description:', parsedNews[0].data.label)
+          .setFooter(parsedNews[0].ts)
+          .setColor(15603580);
+        webhook.send(badge);
+        break;
+      }
+
+      default:
+        break;
+    }
+
+    fs.writeFile(path.join(__dirname, '../cache.json'), body, () => {});
+  });
+  return true;
+});
