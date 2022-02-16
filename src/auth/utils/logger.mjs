@@ -11,16 +11,16 @@ class Logger {
     if (!latest) latest = this.logs[this.logs.length - 1];
     switch (latest.level) {
       case 0:
-        console.log(`(${latest.time}) ${chalk.green('[INFO]')} ${latest.message} ${JSON.stringify(latest.data, null, 2)}`);
+        console.log(`(${chalk.gray(latest.time)}) ${chalk.green('[INFO]')} ${latest.message} ${JSON.stringify(latest.data, null, 2)}`);
         break;
       case 1:
-        console.log(`(${latest.time}) ${chalk.yellow('[WARN]')} ${latest.message} ${JSON.stringify(latest.data, null, 2)}`);
+        console.log(`(${chalk.gray(latest.time)}) ${chalk.yellow('[WARN]')} ${latest.message} ${JSON.stringify(latest.data, null, 2)}`);
         break;
       case 2:
-        console.log(`(${latest.time}) ${chalk.red('[CRITICAL]')} ${latest.message} ${JSON.stringify(latest.data, null, 2)}`);
+        console.log(`(${chalk.gray(latest.time)}) ${chalk.red('[CRITICAL]')} ${latest.message} ${JSON.stringify(latest.data, null, 2)}`);
         break;
       default:
-        console.log(`(${latest.time}) ${chalk.white('[UNKNOWN]')} ${latest.message} ${JSON.stringify(latest.data, null, 2)}`);
+        console.log(`(${chalk.gray(latest.time)}) ${chalk.white('[UNKNOWN]')} ${latest.message} ${JSON.stringify(latest.data, null, 2)}`);
         break;
     }
   }
