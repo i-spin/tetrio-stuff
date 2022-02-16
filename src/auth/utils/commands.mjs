@@ -13,16 +13,25 @@ const authorize = (id, token, handling, signature, i) => ({
   },
 });
 
-const die = () => ({ command: 'die' });
+const social = {
+  presence: (id, status, detail) => ({
+    id,
+    command: 'social.presence',
+    data: { status, detail },
+  }),
+};
 
 const ping = () => {
-  'PING';
+  const buf = Buffer.alloc(2);
+  buf.writeUInt8(0xB0, 0);
+  buf.write('ping', 1);
+  return buf;
 };
 
 export {
   newRibbon,
   handling,
   authorize,
-  die,
+  social,
   ping,
 };
