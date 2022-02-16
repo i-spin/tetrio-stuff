@@ -21,6 +21,10 @@ const endpoint = await fetch('https://tetr.io/api/server/ribbon', {
 }).then((res) => res.json()).then((data) => data.endpoint);
 
 const ribbon = new Ribbon(endpoint);
+ribbon.handleResponse = (data) => {
+  console.log(data);
+};
+
 const handling = commands.handling(0, 7.5, 40, true, false, 0);
 
 await ribbon.waitForWebSocket();
@@ -35,7 +39,3 @@ ribbon.sendCommand(commands.authorize(
 ));
 ribbon.ping();
 ribbon.disconnect();
-
-process.on('beforeExit', () => {
-  ribbon.logger.display();
-});

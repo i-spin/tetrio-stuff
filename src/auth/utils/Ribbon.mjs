@@ -8,11 +8,8 @@ class Ribbon {
     this.ws = new WebSocket(link);
     this.commandQueue = [];
     this.bufferQueue = [];
+    this.handleResponse = () => {};
     this.logger = new Logger();
-
-    this.ws.on('open', () => {
-      this.logger.info('Ribbon connection opened', null);
-    });
 
     this.ws.on('close', () => {
       this.logger.info('Ribbon connection closed', null);
@@ -32,6 +29,7 @@ class Ribbon {
             break;
           }
           this.logger.info('Recieved data 0x45', decodedData);
+          this.handleResponse(decodedData);
           break;
         }
 
@@ -40,6 +38,12 @@ class Ribbon {
         case 0xae: {
           const decodedData = tinyMsgpack.decode(data.slice(1));
           this.logger.info('Recieved data 0xae', decodedData);
+          this.handleResponse(decodedData);
+          break;
+        }
+
+        case 0xb0: {
+          this.logger.info('Pong!', data.slice(1));
           break;
         }
 
@@ -54,6 +58,7 @@ class Ribbon {
   async waitForWebSocket() {
     return new Promise((resolve) => {
       this.ws.on('open', () => {
+        this.logger.info('Ribbon connection opened', null);
         resolve();
       });
     });
@@ -86,11 +91,11 @@ class Ribbon {
 
   sendBuffer(buffer) {
     if (this.ws.readyState !== WebSocket.OPEN) {
-      this.logger.info('Adding buffer to queue', buffer.data);
+      this.logger.info('Adding buffer to queue', buffer);
       this.bufferQueue.push(buffer);
     } else {
       this.flushBufferQueue();
-      this.logger.info('Sending buffer', buffer.data);
+      this.logger.info('Sending buffer', buffer);
       this.ws.send(buffer);
     }
   }
