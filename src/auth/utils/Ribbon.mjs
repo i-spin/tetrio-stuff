@@ -53,33 +53,22 @@ class Ribbon {
     });
   }
 
-  sendCommand(commandObject) {
-    this.logger.info('Adding command to queue', commandObject);
-    this.commandQueue.push(commandObject);
-    if (this.ws.readyState !== WebSocket.OPEN) return false;
-    this.commandQueue.forEach(() => {
-      this.logger.info('Sending command', this.commandQueue[0]);
-      this.ws.send(tinyMsgpack.encode(this.commandQueue.shift()));
-    });
-    return true;
-  }
-
   flushCommandQueue() {
     this.commandQueue.forEach(() => {
-      this.logger.warn('Forcing to send command', this.commandQueue[0]);
+      this.logger.warn('Forcing to send command', this.commandQueue[0].command);
       this.ws.send(tinyMsgpack.encode(this.commandQueue.shift()));
     });
   }
 
-  sendBuffer(buffer) {
-    this.logger.info('Adding buffer to queue', buffer);
-    this.bufferQueue.push(buffer);
-    if (this.ws.readyState !== WebSocket.OPEN) return false;
-    this.bufferQueue.forEach(() => {
-      this.logger.info('Sending buffer', this.bufferQueue[0]);
-      this.ws.send(this.bufferQueue.shift());
-    });
-    return true;
+  sendCommand(commandObject) {
+    if (this.ws.readyState !== WebSocket.OPEN) {
+      this.logger.info('Adding command to queue', commandObject.command);
+      this.commandQueue.push(commandObject);
+    } else {
+      this.flushCommandQueue();
+      this.logger.info('Sending command', commandObject.command);
+      this.ws.send(tinyMsgpack.encode(commandObject));
+    }
   }
 
   flushBufferQueue() {
@@ -87,6 +76,17 @@ class Ribbon {
       this.logger.warn('Forcing to send buffer', this.bufferQueue[0]);
       this.ws.send(this.bufferQueue.shift());
     });
+  }
+
+  sendBuffer(buffer) {
+    if (this.ws.readyState !== WebSocket.OPEN) {
+      this.logger.info('Adding buffer to queue', buffer.data);
+      this.bufferQueue.push(buffer);
+    } else {
+      this.flushBufferQueue();
+      this.logger.info('Sending buffer', buffer.data);
+      this.ws.send(buffer);
+    }
   }
 
   ping() {

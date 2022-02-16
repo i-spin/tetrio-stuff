@@ -21,16 +21,16 @@ class Logger {
     this.logs.forEach((log) => {
       switch (log.level) {
         case 0:
-          console.log(`${chalk.green('[INFO]')} ${log.message}\n${JSON.stringify(log.data, null, 2)}`);
+          console.log(`${chalk.green('[INFO]')} ${log.message} ${JSON.stringify(log.data, null, 2)}`);
           break;
         case 1:
-          console.log(`${chalk.yellow('[WARN]')} ${log.message}\n${JSON.stringify(log.data, null, 2)}`);
+          console.log(`${chalk.yellow('[WARN]')} ${log.message} ${JSON.stringify(log.data, null, 2)}`);
           break;
         case 2:
-          console.log(`${chalk.red('[CRITICAL]')} ${log.message}\n${JSON.stringify(log.data, null, 2)}`);
+          console.log(`${chalk.red('[CRITICAL]')} ${log.message} ${JSON.stringify(log.data, null, 2)}`);
           break;
         default:
-          console.log(`${chalk.white('[UNKNOWN]')} ${log.message}\n${JSON.stringify(log.data, null, 2)}`);
+          console.log(`${chalk.white('[UNKNOWN]')} ${log.message} ${JSON.stringify(log.data, null, 2)}`);
           break;
       }
     });
