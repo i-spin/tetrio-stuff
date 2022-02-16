@@ -23,6 +23,8 @@ const endpoint = await fetch('https://tetr.io/api/server/ribbon', {
 const ribbon = new Ribbon(endpoint);
 const handling = commands.handling(0, 7.5, 40, true, false, 0);
 
+await ribbon.waitForWebSocket();
+
 ribbon.connect();
 ribbon.sendCommand(commands.authorize(
   ribbon.newId(),

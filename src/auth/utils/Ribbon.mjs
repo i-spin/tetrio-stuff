@@ -12,8 +12,6 @@ class Ribbon {
 
     this.ws.on('open', () => {
       this.logger.info('Ribbon connection opened', null);
-      this.flushCommandQueue();
-      this.flushBufferQueue();
     });
 
     this.ws.on('close', () => {
@@ -50,6 +48,14 @@ class Ribbon {
           break;
         }
       }
+    });
+  }
+
+  async waitForWebSocket() {
+    return new Promise((resolve) => {
+      this.ws.on('open', () => {
+        resolve();
+      });
     });
   }
 
